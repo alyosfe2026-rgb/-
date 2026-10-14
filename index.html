@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="مساعد الدراسة">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#1a1a1a">
+<title>مساعد الدراسة الذكي — ذكاء اصطناعي</title>
+<style>
+:root{
+--kimi-color-text-primary:#1a1a1a;--kimi-color-text-secondary:#4d4d4d;--kimi-color-text-tertiary:#8a8a8a;--kimi-color-text-quaternary:#b8b8b8;
+--kimi-color-surface:#ffffff;--kimi-color-surface-muted:#f2f2f2;--kimi-color-surface-raised:#ffffff;--kimi-color-surface-strong:#e8e8e8;
+--kimi-color-border:#e0e0e0;--kimi-color-danger:#d94b4b;--kimi-color-positive:#2f9e63;--kimi-color-warning:#d9a13b;--kimi-color-accent:#3b82c4;
+--kimi-chart-1:#3b82c4;--kimi-chart-2:#d94b4b;--kimi-chart-3:#2f9e63;--kimi-chart-4:#8b5cc4;--kimi-chart-5:#8a8a8a;
+--t-micro:60ms;--t-fast:120ms;--t-normal:200ms;--t-slow:300ms;--ease-out:cubic-bezier(.22,.8,.35,1);--ease-standard:cubic-bezier(.4,0,.2,1);
+--kimi-font-sans:-apple-system,'Segoe UI',Roboto,'Noto Kufi Arabic',Tahoma,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+:root{
+--kimi-color-text-primary:#f2f2f2;--kimi-color-text-secondary:#c8c8c8;--kimi-color-text-tertiary:#909090;--kimi-color-text-quaternary:#606060;
+--kimi-color-surface:#141414;--kimi-color-surface-muted:#1f1f1f;--kimi-color-surface-raised:#1c1c1c;--kimi-color-surface-strong:#2a2a2a;
+--kimi-color-border:#333333;
+}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--kimi-color-surface);font-family:var(--kimi-font-sans);color:var(--kimi-color-text-primary)}
+#app{max-width:720px;margin:0 auto;padding:16px 16px 48px}
+button,input,select,textarea{font:inherit}
+svg{display:block}
+.hdr{display:flex;align-items:center;gap:12px;padding:8px 0 12px;border-bottom:1px solid var(--kimi-color-border);margin-bottom:16px}
+.hdr .ic{width:40px;height:40px;border-radius:10px;background:var(--kimi-color-surface-muted);display:flex;align-items:center;justify-content:center;color:var(--kimi-color-text-primary);flex:none}
+.hdr h1{font-size:17px;font-weight:500;margin:0}
+.hdr p{margin:2px 0 0;font-size:12px;color:var(--kimi-color-text-tertiary)}
+.prog{margin-inline-start:auto;text-align:center;flex:none}
+.prog .num{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.prog .bar{width:88px;height:4px;border-radius:2px;background:var(--kimi-color-surface-muted);margin-top:4px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--kimi-color-text-primary);border-radius:2px;transition:width .2s}
+.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--kimi-color-border);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:6px;padding:8px 12px;font-size:14px;color:var(--kimi-color-text-secondary);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap}
+.tab.on{color:var(--kimi-color-text-primary);border-bottom-color:var(--kimi-color-text-primary);font-weight:500}
+.sec{display:none}
+.sec.on{display:block}
+.row{display:flex;gap:8px;align-items:center}
+.lesson{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--kimi-color-border);border-radius:10px;margin-bottom:8px;cursor:pointer}
+.lesson .n{width:28px;height:28px;border-radius:8px;background:var(--kimi-color-surface-muted);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex:none}
+.lesson .t{flex:1;min-width:0}
+.lesson .t b{font-size:15px;font-weight:500;display:block}
+.lesson .t span{font-size:12px;color:var(--kimi-color-text-tertiary)}
+.lesson .done{display:none;color:var(--kimi-color-positive);flex:none}
+.lesson.finished .done{display:block}
+.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:6px;font-size:12px;background:color-mix(in srgb,var(--kimi-chart-1) 12%,transparent);color:var(--kimi-chart-1);margin-inline-start:6px}
+.card{border:1px solid var(--kimi-color-border);border-radius:12px;padding:16px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--kimi-color-text-secondary);background:none;border:none;cursor:pointer;padding:4px 0;margin-bottom:8px}
+.card h2{font-size:20px;font-weight:500;margin:0 0 4px}
+.meta{font-size:12px;color:var(--kimi-color-text-tertiary);margin-bottom:12px}
+.card h3{font-size:15px;font-weight:500;margin:16px 0 6px;padding-top:12px;border-top:1px solid var(--kimi-color-border)}
+.card p{font-size:15px;line-height:26px;color:var(--kimi-color-text-secondary);margin:0 0 8px}
+.card ul{margin:0;padding-inline-start:18px}
+.card li{font-size:14px;line-height:24px;color:var(--kimi-color-text-secondary);margin-bottom:4px}
+.termrow{display:flex;gap:8px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--kimi-color-border)}
+.termrow:last-child{border-bottom:none}
+.termrow b{font-size:14px;font-weight:500;white-space:nowrap}
+.termrow span{font-size:13px;color:var(--kimi-color-text-secondary);line-height:22px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:8px;border:1px solid var(--kimi-color-text-primary);background:var(--kimi-color-text-primary);color:var(--kimi-color-surface);font-size:14px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--kimi-color-text-primary);border-color:var(--kimi-color-border)}
+textarea{width:100%;min-height:120px;padding:10px 12px;border-radius:10px;border:1px solid var(--kimi-color-border);background:transparent;color:var(--kimi-color-text-primary);font-size:15px;line-height:26px;resize:vertical}
+input[type=text]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--kimi-color-border);background:transparent;color:var(--kimi-color-text-primary);font-size:14px}
+input[type=file]{display:none}
+.fakelbl{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:8px;border:1px dashed var(--kimi-color-text-quaternary);font-size:14px;color:var(--kimi-color-text-secondary);cursor:pointer}
+.sumbox{border:1px solid var(--kimi-color-border);border-radius:12px;padding:16px;margin-top:12px}
+.sumbox h3{font-size:15px;font-weight:500;margin:0 0 8px}
+.sumbox p{font-size:15px;line-height:28px;margin:0 0 10px;color:var(--kimi-color-text-secondary)}
+.sumbox p mark{background:color-mix(in srgb,var(--kimi-chart-4) 18%,transparent);border-radius:3px;padding:0 2px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.stat{border:1px solid var(--kimi-color-border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--kimi-color-text-tertiary)}
+.stat b{font-size:16px;font-weight:500;display:block}
+.q{border:1px solid var(--kimi-color-border);border-radius:10px;padding:12px;margin-bottom:10px}
+.q p{font-size:14px;font-weight:500;margin:0 0 8px}
+.q label{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--kimi-color-text-secondary);padding:8px;border-radius:6px;cursor:pointer}
+.q input{accent-color:var(--kimi-color-text-primary);width:18px;height:18px}
+.q.ok{border-color:var(--kimi-color-positive)}
+.q.bad{border-color:var(--kimi-color-danger)}
+.feedback{font-size:13px;margin-top:6px}
+.feedback.ok{color:var(--kimi-color-positive)}
+.feedback.bad{color:var(--kimi-color-danger)}
+.hidden{display:none!important}
+select{padding:8px 10px;border-radius:8px;border:1px solid var(--kimi-color-border);background:var(--kimi-color-surface);color:var(--kimi-color-text-primary);font-size:13px}
+.hint{font-size:13px;color:var(--kimi-color-text-tertiary);margin:0 0 8px;line-height:22px}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="hdr">
+  <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15.4795 15.4971C15.9765 15.4971 16.3799 15.9004 16.3799 16.3975C16.3799 16.8945 15.9765 17.2978 15.4795 17.2979H8.52051C8.02345 17.2979 7.62012 16.8945 7.62012 16.3975C7.62012 15.9004 8.02345 15.4971 8.52051 15.4971H15.4795Z" fill="currentColor"/><path d="M12.3359 11.0996C12.8329 11.0997 13.2354 11.503 13.2354 12C13.2354 12.497 12.8329 12.9003 12.3359 12.9004H8.52051C8.02345 12.9004 7.62012 12.4971 7.62012 12C7.62012 11.5029 8.02345 11.0996 8.52051 11.0996H12.3359Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13.1719 2.09961C13.9408 2.09969 14.6789 2.40555 15.2227 2.94922L19.0508 6.77734C19.5946 7.32113 19.9003 8.05911 19.9004 8.82812V18C19.9004 20.1539 18.1539 21.9004 16 21.9004H8C5.84626 21.9002 4.09961 20.1538 4.09961 18V6C4.09961 3.84621 5.84626 2.09981 8 2.09961H13.1719ZM8 3.90039C6.84037 3.90059 5.90039 4.84032 5.90039 6V18C5.90039 19.1597 6.84037 20.0994 8 20.0996H16C17.1598 20.0996 18.0996 19.1598 18.0996 18V9.90039H15C13.3985 9.90019 12.0996 8.6015 12.0996 7V3.90039H8ZM13.9004 7C13.9004 7.60739 14.3927 8.09941 15 8.09961H17.8213C17.8068 8.08333 17.7928 8.06626 17.7773 8.05078L13.9492 4.22266C13.9335 4.20696 13.9169 4.19237 13.9004 4.17773V7Z" fill="currentColor"/></svg></div>
+  <div>
+    <h1>مساعد الدراسة الذكي</h1>
+    <p>دروس وملخصات ومفاهيم الذكاء الاصطناعي — بالعربية</p>
+  </div>
+  <div class="prog">
+    <div class="num" id="progNum">0/0</div>
+    <div class="bar"><i id="progBar" style="width:0%"></i></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" data-tab="lessons">الدروس</button>
+  <button class="tab" data-tab="summ">تلخيص ملف</button>
+  <button class="tab" data-tab="terms">المفاهيم</button>
+  <button class="tab" data-tab="quiz">اختبر نفسك</button>
+</div>
+
+<div class="sec on" id="sec-lessons">
+  <div id="lessonList"></div>
+  <div id="lessonView" class="hidden"></div>
+</div>
+
+<div class="sec" id="sec-summ">
+  <p class="hint">ارفع ملف نصي (txt) أو الصق نص ملزمتك، وسألخصه لك فورًا وأشرح أهم مفاهيمه. كل شيء يعمل على جهازك دون إنترنت.</p>
+  <textarea id="srcText" placeholder="الصق النص هنا… أو ارفع ملفًا نصيًا"></textarea>
+  <div class="row" style="margin-top:12px;flex-wrap:wrap">
+    <label class="fakelbl">رفع ملف نصي<input type="file" id="fileIn" accept=".txt,text/plain"></label>
+    <span style="font-size:13px;color:var(--kimi-color-text-quaternary)" id="fileName"></span>
+    <span style="flex:1"></span>
+    <select id="ratio">
+      <option value="0.3">مختصر جدًا ٣٠٪</option>
+      <option value="0.45" selected>متوازن ٤٥٪</option>
+      <option value="0.6">مفصّل ٦٠٪</option>
+    </select>
+    <button class="btn" id="summBtn">لخّص واشرح</button>
+  </div>
+  <div id="summOut"></div>
+</div>
+
+<div class="sec" id="sec-terms">
+  <input type="text" id="termSearch" placeholder="ابحث عن مصطلح… مثل: خوارزمية، شبكة عصبية">
+  <div id="termList" style="margin-top:8px"></div>
+</div>
+
+<div class="sec" id="sec-quiz">
+  <div class="row" style="margin-bottom:12px;flex-wrap:wrap">
+    <span style="font-size:14px;color:var(--kimi-color-text-secondary)">اختر الدرس:</span>
+    <select id="quizSel"></select>
+    <button class="btn" id="quizCheck">تحقق</button>
+    <span id="quizScore" style="font-size:14px;font-weight:500"></span>
+  </div>
+  <div id="quizBox"></div>
+</div>
+</div>
+<script>
+const LESSONS=[
+{id:"l1",title:"مدخل إلى الذكاء الاصطناعي",mins:12,level:"تمهيدي",
+ intro:"يضع هذا الدرس الأساس: ما الذكاء الاصطناعي؟ وكيف يختلف عن البرمجة التقليدية؟ وما فروعه الرئيسية؟",
+ secs:[
+ {h:"ما هو الذكاء الاصطناعي؟",p:"الذكاء الاصطناعي هو فرع من علوم الحاسوب يهدف إلى بناء أنظمة تستطيع أداء مهام تتطلب ذكاءً بشريًا: الفهم والتعلم والاستدلال واتخاذ القرار. بخلاف البرامج التقليدية التي تتبع قواعد ثابتة يكتبها المبرمج، تتعلم أنظمة الذكاء الاصطناعي الأنماط من البيانات ثم تعمّمها على حالات جديدة."},
+ {h:"الذكاء الاصطناعي الضيق والعام",p:"الذكاء الاصطناعي الضيق (ANI) هو كل الأنظمة الموجودة اليوم: تتقن مهمة واحدة مثل الترجمة أو التعرف على الوجوه. أما الذكاء الاصطناعي العام (AGI) فيعادل القدرات الذهنية للإنسان في كل المجالات، وما زال هدفًا نظريًا لم يتحقق."},
+ {h:"فروع المجال",p:"يتفرع المجال إلى عدة أفرع مترابطة: التعلم الآلي الذي يتعلم من الأمثلة، ومعالجة اللغة الطبيعية التي تفهم اللغة البشرية، والرؤية الحاسوبية التي تفهم الصور، والروبوتات التي تتفاعل مع العالم الفيزيائي، والأنظمة الخبيرة التي تحاكي خبرة المتخصصين."}],
+ points:["الفرق الجوهري: القواعد المكتوبة مقابل التعلم من البيانات","كل تطبيقات الذكاء الاصطناعي الحالية ضيقة (ANI)","البيانات هي الوقود، والخوارزميات هي المحرك","يجمع المجال بين الرياضيات وعلوم الحاسوب والمنطق"],
+ terms:["الذكاء الاصطناعي الضيق ANI","الذكاء الاصطناعي العام AGI","وكيل ذكي Agent","تورنج تيست"]},
+{id:"l2",title:"حل المشكلات بالبحث",mins:18,level:"أساسي",
+ intro:"من أقدم مواضيع الذكاء الاصطناعي: كيف يجد النظام حلًا في فضاء بحث ضخم باستكشاف البدائل بذكاء.",
+ secs:[
+ {h:"فضاء المشكلة",p:"أي مشكلة تُمثل رياضيًا بثلاثة عناصر: الحالة الابتدائية، ودالة النجاح التي تحدد متى نصل للهدف، ومجموعة الإجراءات المتاحة. فضاء البحث هو شجرة أو رسم بياني يحوي كل الحالات الممكنة الوصولًا من البداية."},
+ {h:"البحث غير المُعلوم",p:"البحث غير المُعلوم (Uninformed) لا يملك معلومات عن الهدف: البحث بالعرض BFS يستكشف المستويات واحدًا واحدًا ويضمن أقصر حل، والبحث بالعمق DFS ينغمس أولًا وهو أقل استهلاكًا للذاكرة لكنه قد يضل في فروع بلا نهاية."},
+ {h:"البحث المُعلوم والاستدلال",p:"البحث المُعلوم (Informed) يستخدم دالة تقييم heuristic تقدّر قرب كل عقدة من الهدف، مثل خوارزمية A* التي توازن بين التكلفة الفعلية والتقدير المتبقي، فتجمع بين الدقة والكفاءة وهي الأكثر استخدامًا في التطبيقات الواقعية."}],
+ points:["تمثيل المشكلة: حالة بداية + أفعال + اختبار هدف","BFS يضمن أقصر طريق وDFS يوفر الذاكرة","الخوارزميات المُعلومة توجّه البحث بدل التمشيط الأعمى","A* مثالية عندما يكون التقييم مقبولًا ولا يبالغ"],
+ terms:["فضاء الحالات State Space","البحث بالعرض BFS","البحث بالعمق DFS","الخوارزمية A*","دالة التقييم Heuristic"]},
+{id:"l3",title:"تمثيل المعرفة والاستدلال المنطقي",mins:16,level:"أساسي",
+ intro:"كيف يمثّل الحاسوب المعرفة بصيغة يمكن الاستدلال منها آليًا؟ اللبنة الأولى هي المنطق الصوري.",
+ secs:[
+ {h:"لماذا نحتاج تمثيل المعرفة؟",p:"البرنامج الذكي يحتاج معرفة عن العالم في صيغة رمزية يمكن معالجتها حسابيًا: حقائق وقواعد وعلاقات. تمثيل المعرفة يجيب عن سؤال: ماذا نعرف؟ وكيف نمثله؟ وكيف نستنتج معلومات جديدة منه؟"},
+ {h:"المنطق الاستنتاجي",p:"في المنطق الاستنتاجي (Propositional Logic) نستخدم متغيرات منطقية وروابط (و، أو، لا، إذا…ف) لبناء عبارات. الصيغة القُصَرية CNF تتيح آلية الحل الحاسوبي، وأشهر خوارزمية الاستدلال هي البرهان بالتناقض Resolution."},
+ {h:"منطق المُسندات من الدرجة الأولى",p:"منطق المسندات FOL أقوى تعبيرًا: يضيف الثوابت والدوال والمحددات (∀ و∃)، فيمكننا قول «كل إنسان فانٍ» بصيغة رسمية ثم استنتاج خصائص جديدة آليًا عبر قاعدتي الاستدلال التعميمي والاختصاص."}],
+ points:["المنطق لغة رسمية للمعرفة مع دلالات واضحة","الصيغة القُصَرية CNF جسر بين النظرية والحوسبة","FOL يعبّر عن الكم والعلاقات والدوال","الاستدلال الآلي يشتق معرفة جديدة من معرفة مخزنة"],
+ terms:["المنطق الاستنتاجي","منطق المسندات FOL","الصيغة القُصَرية CNF","البرهان بالتناقض Resolution"]},
+{id:"l4",title:"الأنظمة الخبيرة",mins:14,level:"متوسط",
+ intro:"أنظمة تحاكي خبرة الإنسان المتخصص في مجال ضيق: التشخيص الطبي، وصيانة الأعطال، والاستشارات.",
+ secs:[
+ {h:"البنية الكلاسيكية",p:"يتكون النظام الخبير من قاعدة معرفة (قواعد if-then تخزن خبرة المختصين)، ومحرك استدلال، وواجهة مستخدم، ومكون اكتساب المعرفة، فضلًا عن مكون شرح يوضح كيف وصل النظام إلى نتيجته."},
+ {h:"الاستنتاج الأمامي والخلفي",p:"الاستنتاج الأمامي يبدأ من المعطيات ويطبق القواعد إلى أن يصل لاستنتاج — مناسب للمراقبة والتنبؤ. الاستنتاج الخلفي يبدأ من فرضية (هل المريض مصاب بالإنفلونزا؟) ويبحث عن أدلة تدعمها — مناسب للتشخيص."},
+ {h:"القيود والإرث",p:"نجحت الأنظمة الخبيرة في الثمانينات لكنها تعاني هشاشة المعرفة: لا تتعلم ولا تتعامل مع عدم اليقين جيدًا. ورثها التعلم الآلي الذي يتعلم الأنماط من البيانات بدل برمجة القواعد يدويًا، ومع ذلك لا تزال أنظمة القواعد مستخدمة عندما يجب أن تكون القرارات مفسَّرة."}],
+ points:["الأنظمة الخبيرة = قاعدة قواعد + محرك استدلال + مفسّر","الأمامي للتنبؤ، الخلفي للتشخيص","الشفافية ميزتها الكبرى: يشرح سبب قراره","المعرفة اليدوية غالية وتفتقر للمرونة"],
+ terms:["قاعدة المعرفة","محرك الاستدلال Inference Engine","السلاسل الأمامية والخلفية","الشجرة الاستنتاجية"]},
+{id:"l5",title:"التعلم الآلي: أساس المنهج",mins:20,level:"أساسي",
+ intro:"قلب الذكاء الاصطناعي الحديث: بدل برمجة القواعد، نعرض أمثلة على الحاسوب فيتعلم القاعدة بنفسه.",
+ secs:[
+ {h:"أنواع التعلم الثلاثة",p:"التعلم المُشرَف Supervised: بيانات موسومة (صورة + اسمها) والهدف التنبؤ بوسم جديد. التعلم غير المُشرَف: بيانات بلا وسوم والهدف اكتشاف البنى كالتجميع Clustering. التعلم المعزّز: وكيل يتعلم بالتجربة والمكافأة والعقاب كما في ألعاب الفيديو والروبوتات."},
+ {h:"دورة حياة نموذج تعلم آلي",p:"تمر العملية بخطوات: جمع البيانات وتنظيفها، ثم تقسيمها تدريبًا واختبارًا، ثم اختيار نموذج (خطي، شجرة قرار، شبكة عصبية)، ثم التدريب بتقليل دالة خسارة Loss Function، ثم التقييم على بيانات لم يرها النموذج، وأخيرًا النشر والمراقبة."},
+ {h:"الإفراط في التخصيص والتعميم",p:"أخطر مفهومين في المجال: الإفراط في التخصيص Overfitting حين يحفظ النموذج بيانات التدريب حرفيًا ويخفق في الجديد، والتعميم Underfitting حين يكون أبسط من اللازم. نحاربهما بالتدريب على عينات كافية والتقاطع validation والتنظيم Regularization."}],
+ points:["المُشرَف للتنبؤ، غير المُشرَف لاكتشاف البنى، المعزّز لاتخاذ القرار","تقييم النموذج يكون دائمًا على بيانات اختبار مخفية","الخسارة تقيس الخطأ والتحسين يقللها تدريجيًا","Overfitting عدو النماذج الأول، وعلاجه البيانات والتنظيم"],
+ terms:["التعلم المُشرَف","التعلم غير المُشرَف","التعلم المعزّز","Overfitting","دالة الخسارة Loss"]},
+{id:"l6",title:"الشبكات العصبية والتعلم العميق",mins:20,level:"متوسط",
+ intro:"نماذج مستوحاة من الدماغ البشري أحدثت ثورة في الرؤية واللغة والصوت خلال العقد الأخير.",
+ secs:[
+ {h:"العصبون الاصطناعي والشبكة",p:"العصبون الاصطناعي يأخذ مدخلات، يضربها بأوزان، يجمعها مع انحياز، ثم يمرر الناتج عبر دالة تنشيط غير خطية. ترتيب العصبونات في طبقات (مدخلة، مخفية، مخرجة) يشكّل الشبكة، والأوزان هي ما يُتعلم أثناء التدريب."},
+ {h:"الانتشار الخلفي والتدرج",p:"التدريب يحدث بخوارزمية الانتشار الخلفي Backpropagation: نحسب خطأ التنبؤ، ثم نوزع مسؤولية الخطأ على الأوزان طبقة طبقة باستخدام قاعدة السلسلة، ثم نعدل الأوزان باتجاه ينقص الخطأ بمقدار يحدده معدل التعلم."},
+ {h:"الشبكات الالتفافية والمتكررة والمحولات",p:"الشبكات الالتفافية CNN تتفوق على الصور عبر مرشحات تكتشف الحواف والأنماط. الشبكات المتكررة RNN تعالج التسلسلات كالنص. والمحولات Transformers تعتمد آلية الانتباه Attention لتفهم العلاقات البعيدة في التسلسل، وهي أساس النماذج اللغوية الكبيرة."}],
+ points:["الخطوة غير الخطية هي ما يمنح الشبكات قوتها التعبيرية","الانتشار الخلفي = حساب التدرج ثم تحديث الأوزان","CNN للصور، RNN للتسلسلات، Transformers للأطوال الكبيرة","الحوسبة الثقيلة دفعت التعلم العميق مع وحدات المعالجة الرسومية"],
+ terms:["العصبون الاصطناعي","دالة التنشيط","الانتشار الخلفي Backprop","شبكة CNN","آلية الانتباه Attention"]},
+{id:"l7",title:"معالجة اللغة الطبيعية",mins:18,level:"متوسط",
+ intro:"فرع يجعل الحاسوب يفهم اللغة البشرية ويولدها: من التصحيح الإملائي إلى المحادثة والترجمة والتلخيص.",
+ secs:[
+ {h:"من النص إلى أرقام",p:"لا يفهم الحاسوب الكلمات مباشرة، فيجب تحويلها إلى متجهات رقمية. الطريقة التقليدية: تمثيل الحقائب Bag of Words و TF-IDF الذي يزن أهمية كل كلمة في المستند مقابل مجموعته. والطريقة الحديثة: Word Embeddings التي تضع الكلمات المتشابهة قرب بعضها في فضاء رياضي."},
+ {h:"مهام أساسية",p:"أشهر مهام المعالجة: تصنيف النصوص (تحليل المشاعر)، والتعرف على الكيانات المسماة NER (استخراج الأسماء والأماكن)، والترجمة الآلية، والإجابة عن الأسئلة، وتلخيص النصوص، ونمذجة اللغة أي التنبؤ بالكلمة التالية."},
+ {h:"النماذج اللغوية الكبيرة",p:"بُنيت النماذج الحديثة على بنية المحوّلات وتدربت على كميات هائلة من النصوص. قدرتها على فهم السياق الطويل جعلتها أدوات عامة تؤدي مهام متعددة دون إعادة تدريب، مع قدرات كالتلخيص والترجمة والبرمجة."}],
+ points:["التمثيل الرقمي للكلمات هو المدخل لكل مهمة لغوية","TF-IDF يقيس أهمية الكلمة، والتضمينات تقيس المعنى","المحوّلات ثورة البنية، والنماذج الكبيرة ثورة الحجم","جودة النموذج تتبع قانون التوسّع: بيانات أكثر + حوسبة أكثر"],
+ terms:["TF-IDF","التضمينات Embeddings","NER","المحوّلات Transformers","النماذج اللغوية الكبيرة LLM"]},
+{id:"l8",title:"الرؤية الحاسوبية",mins:16,level:"متوسط",
+ intro:"كيف ترى الآلة؟ من تصنيف الصور إلى اكتشاف الأجسام والقيادة الذاتية للسيارات.",
+ secs:[
+ {h:"المهام الأساسية",p:"تصنيف الصور يجيب: ما محتوى هذه الصورة؟ واكتشاف الأجسام يحدد أين تقع كل فئة بصندوق محيط. التجزئة الدلالية Semantic Segmentation تذهب أبعد: تلون كل بكسل بفئته. وهناك تتبع الأجسام عبر الفيديو وتحديد الوجوه وقراءة النصوص OCR."},
+ {h:"دور الشبكات الالتفافية",p:"سيطرت الشبكات الالتفافية على المجال منذ 2012: طبقات التفاف مبكرة تتعلم الحواف والألوان، وطبقات متوسطة تتعلم الأنماط والأنسجة، وطبقات متأخرة تتعلم الأجسام الكاملة. الشبكات العميقة مثل ResNet مكنت تدريب مئات الطبقات دون مشاكل التلاشي."},
+ {h:"التحديات الواقعية",p:"تواجه الرؤية الحاسوبية صعوبات: تغير الإضاءة وزوايا التصوير، والأنماط الخادعة Adversarial التي تخدع النموذج بتشويش دقيق، وتحيزات البيانات التي تضعف الأداء على فئات معينة، إضافة إلى حساسية التطبيقات الأمنية."}],
+ points:["من التصنيف إلى التجزئة: تدرج في دقة الفهم المكاني","الانتقال التعلمي ينقل معرفة نماذج جاهزة لمهامك","التشويه الخادع ثغرة نظرية وعملية مهمة","جودة بيانات التدريب تحدد سقف أداء النموذج"],
+ terms:["التصنيف واكتشاف الأجسام","التجزئة الدلالية","الانتقال التعلمي","الأنماط الخادعة","الشبكات الالتفافية CNN"]},
+{id:"l9",title:"أخلاقيات الذكاء الاصطناعي",mins:14,level:"تمهيدي",
+ intro:"مع القوة تأتي المسؤولية: التحيز، والخصوصية، والشفافية، والمساءلة محاور أساسية في أي منهج جامعي.",
+ secs:[
+ {h:"التحيز والعدالة",p:"يتعلم النموذج من بيانات الماضي، فإذا كانت البيانات منحازة تضخّم النموذج التحيز: أنظمة توظيف تجاهلت سير النساء، وأنظمة وجوه أضعف دقة على البشرة الداكنة. العلاج يبدأ من تدقيق البيانات وقياس العدالة وتقنيات إعادة وزن العينات."},
+ {h:"الخصوصية والأمان",p:"نماذج اللغة قد تحفظ معلومات شخصية من بيانات التدريب وتكشفها عند الاستعلام. الحلول تشمل التشفير التفاضلي Differential Privacy الذي يضيف ضوضاء محسوبة، والتعلم الاتحادي Federated Learning الذي يدرب النموذج على أجهزة المستخدمين دون نقل بياناتهم."},
+ {h:"الشفافية والمساءلة",p:"النماذج العميقة صناديق سوداء صعبة التفسير، لكن في القطاعات الحساسة (طب، عدالة، ائتمان) نحتاج تفسيرًا لكل قرار: تقنيات XAI مثل SHAP وLIME توضح أي الخصائص أثرت في القرار، وتتشكل أطر تنظيمية تفرض تقييم المخاطر قبل الإطلاق."}],
+ points:["التحيز مدخله البيانات وعلاجه يبدأ قبل التدريب","الخصوصية ليست رفاهية: تقنيات حماية النماذج قائمة","القرارات الآلية في المجالات الحساسة تحتاج تفسيرًا","المساءلة يقصد بها مسؤولية الإنسان صاحب القرار النهائي"],
+ terms:["التحيز الخوارزمي","التشفير التفاضلي","التعلم الاتحادي","الذكاء الاصطناعي القابل للتفسير XAI","الحوكمة"]}
+];
+
+const GLOSSARY=[
+["خوارزمية","خطوات محددة ومرتبة لحل مشكلة ما؛ هي وصفة الحل التي ينفذها الحاسوب."],
+["وكيل ذكي Agent","كيان يلتقط المعلومات من بيئته ويتصرف فيها لتحقيق هدف محدد."],
+["نموذج Model","تمثيل رياضي مبسط لظاهرة واقعية يتعلم من البيانات ويستخدم للتنبؤ."],
+["تعلم آلي Machine Learning","فرع يجعل الأنظمة تتحسن بالتجربة دون برمجة صريحة لكل حالة."],
+["تعلم مُشرَف Supervised","تدريب نموذج على بيانات موسومة ليتعلم التنبؤ بالوسم الصحيح لمدخلات جديدة."],
+["تعلم غير مُشرَف","اكتشاف البنى الخفية في بيانات بلا وسوم، وأشهر مهمته التجميع Clustering."],
+["تعلم معزّز RL","وكيل يتعلم سياسة قراراته بالتجربة عبر المكافآت والعقوبات."],
+["إفراط التخصيص Overfitting","حفظ النموذج لبيانات التدريب حرفيًا مع فشل في التعميم على بيانات جديدة."],
+["دالة الخسارة Loss Function","دالة تقيس مقدار خطأ النموذج، والتدريب هدفه تقليلها."],
+["الانحدار Regression","تنبؤ بقيمة عددية مستمرة مثل السعر أو درجة الحرارة."],
+["التصنيف Classification","تنبؤ بفئة من فئات محددة مثل: بريد مزعج أو غير مزعج."],
+["شبكة عصبية Neural Network","نموذج من طبقات عصبونات مترابطة تتعلم الأوزان أثناء التدريب."],
+["الانتشار الخلفي Backpropagation","خوارزمية توزع خطأ النموذج على الأوزان لتحديثها باتجاه يقلل الخسارة."],
+["شبكة التفافية CNN","شبكة متخصصة في الصور تستخدم مرشحات تنزلق لاكتشاف الأنماط المكانية."],
+["المحوّلات Transformers","بنية تعتمد آلية الانتباه، أساس النماذج اللغوية الكبيرة الحديثة."],
+["الانتباه Attention","آلية تخبر النموذج أي أجزاء المدخل أهم لكل جزء آخر عند المعالجة."],
+["نموذج لغوي كبير LLM","نموذج ضخم مدرب على نصوص كثيرة يؤدي مهام لغوية متنوعة."],
+["تمثيل المعرفة","تخزين الحقائق والقواعد بصيغة رمزية يستطيع الحاسوب الاستدلال منها."],
+["نظام خبير Expert System","برنامج يحاكي خبرة مختص عبر قاعدة قواعد ومحرك استدلال."],
+["منطق المسندات FOL","منطق رسمي يستخدم المحددات والدوال للتعبير عن المعرفة والاستدلال."],
+["خوارزمية A*","بحث مُعلوم يجمع بين التكلفة الفعلية والتقدير المتبقي لإيجاد المسار الأمثل."],
+["دالة تقييم Heuristic","تقدير تقريبي يوجه البحث نحو الهدف دون ضمان الأمثلية."],
+["TF-IDF","وزن يقيس أهمية كلمة في مستند مقارنة بمجموعة مستندات كاملة."],
+["تضمينات Embeddings","تمثيلات رقمية للكلمات تجعل المتشابه معنويًا قريبًا حسابيًا."],
+["معالجة اللغة الطبيعية NLP","جعل الحاسوب يفهم اللغة البشرية ويولدها ويحللها."],
+["رؤية حاسوبية CV","تمكين الحاسوب من استخلاص معلومات من الصور والفيديو."],
+["تعلم اتحادي Federated","تدريب النموذج محليًا على أجهزة المستخدمين دون تجميع بياناتهم الخام."],
+["ذكاء اصطناعي قابل للتفسير XAI","تقنيات تجعل قرارات النماذج مفهومة وموثقة للبشر."],
+["تشفير تفاضلي","إضافة ضوضاء رياضية للبيانات تحمي الخصوصية مع الحفاظ على النفع الإحصائي."],
+["انتقال تعلمي Transfer Learning","استخدام نموذج مدرب مسبقًا كبداية لمهمة جديدة مشابهة."]
+];
+
+const QUIZ={
+l1:[
+{q:"الفرق الجوهري بين الذكاء الاصطناعي والبرمجة التقليدية:",opts:["الذكاء الاصطناعي أسرع دائمًا","الأنظمة تتعلم الأنماط من البيانات بدل قواعد ثابتة","البرمجة التقليدية لا تحتاج حاسوبًا"],a:1},
+{q:"كل أنظمة الذكاء الاصطناعي القائمة اليوم تُصنف ضمن:",opts:["الذكاء الاصطناعي العام AGI","الذكاء الاصطناعي الضيق ANI","الذكاء الاصطناعي فوق الإنساني"],a:1},
+{q:"أي مما يلي ليس من فروع الذكاء الاصطناعي؟",opts:["معالجة اللغة الطبيعية","الرؤية الحاسوبية","هندسة الشبكات السلكية"],a:2}],
+l2:[
+{q:"خوارزمية BFS تتميز بأنها:",opts:["تضمن أقصر طريق في الرسم غير الموزون","تستهلك ذاكرة أقل من DFS","لا تستخدم طابورًا انتظارًا"],a:0},
+{q:"دالة التقييم Heuristic في البحث المُعلوم:",opts:["تضمن الحل الأمثل دائمًا","تقدّر قرب العقدة من الهدف لتوجيه البحث","تُستخدم فقط في التعلم الآلي"],a:1},
+{q:"خوارزمية A* تختار العقدة بناءً على:",opts:["العمق فقط","التكلفة الفعلية + التقدير المتبقي للهدف","العشوائية الموجهة"],a:1}],
+l3:[
+{q:"الصيغة القُصَرية CNF تُستخدم أساسًا من أجل:",opts:["ضغط الملفات","تمكين آلية البرهان بالتناقض حوسبيًا","تسريع عرض النصوص"],a:1},
+{q:"منطق المسندات FOL يضيف على المنطق الاستنتاجي:",opts:["المحددات والدوال والعلاقات","الاحتمالات والشك","الرسوم البيانية فقط"],a:0},
+{q:"الاستدلال بالبرهان التناقضي يعمل بمبدأ:",opts:["تكرار الفرضيات حتى تصح","إظهار أن نفي النتيجة يؤدي لتناقض","حذف كل الحالات المستحيلة يدويًا"],a:1}],
+l4:[
+{q:"الاستنتاج الخلفي يبدأ من:",opts:["المعطيات نحو الاستنتاجات","فرضية ويبحث عن أدلة تثبتها","المستخدم مباشرة"],a:1},
+{q:"مكوّن النظام الخبير الذي يشرح كيف وصل لنتيجته هو:",opts:["محرك الاستدلال","واجهة المستخدم","مكوّن الشرح Explanation"],a:2},
+{q:"أبرز قيد للأنظمة الخبيرة التقليدية:",opts:["لا تعمل على الحواسيب الحديثة","المعرفة يدوية وهشة ولا تتعلم","لا يمكن توثيق قواعدها"],a:1}],
+l5:[
+{q:"تجميع العملاء إلى شرائح حسب التشابه دون وسوم هو:",opts:["تعلم مُشرَف","تعلم غير مُشرَف","تعلم معزّز"],a:1},
+{q:"الإفراط في التخصيص Overfitting يعني:",opts:["النموذج أعقد من اللازم فيخفق على بيانات جديدة","النموذج أبسط من اللازم","البيانات أكثر من اللازم"],a:0},
+{q:"يُقيّم النموذج النهائي على:",opts:["بيانات التدريب نفسها","بيانات اختبار لم يرها أثناء التدريب","أي بيانات عشوائية"],a:1}],
+l6:[
+{q:"دور دالة التنشيط في العصبون:",opts:["تسريع الحسابات فقط","إضافة عدم خطية تمكّن الشبكة من تمثيل علاقات معقدة","ضغط الأوزان"],a:1},
+{q:"الانتشار الخلفي يعتمد رياضيًا على:",opts:["جمع الأعداد العشوائية","قاعدة السلسلة لحساب تدرج الخسارة بالنسبة للأوزان","تحليل البيانات إحصائيًا"],a:1},
+{q:"بنية المحوّلات Transformers أساسها:",opts:["الالتفاف المكاني","آلية الانتباه Attention","الشجرة الثنائية"],a:1}],
+l7:[
+{q:"TF-IDF يقيس:",opts:["طول الجملة","أهمية الكلمة في مستند مقارنة بمجموعة مستندات","سرعة القراءة"],a:1},
+{q:"استخراج أسماء الأشخاص والأماكن من نص يُسمى:",opts:["التصنيف","التعرف على الكيانات المسماة NER","الإملاء الآلي"],a:1},
+{q:"نمذجة اللغة الأساسية في النماذج الكبيرة تعني:",opts:["كتابة القواعد النحوية يدويًا","التنبؤ بالكلمة التالية بناءً على السياق","ترتيب الكلمات أبجديًا"],a:1}],
+l8:[
+{q:"التجزئة الدلالية Semantic Segmentation:",opts:["تحدد مكان الجسم بصندوق","تصنف كل بكسل بفئته","تكتشف الوجوه فقط"],a:1},
+{q:"النمط الخادع Adversarial هو:",opts:["نموذج تدريبي جديد","تشويش دقيق لا يلاحظه الإنسان لكنه يخدع النموذج","تقنية تسريع"],a:1},
+{q:"الانتقال التعلمي ينفع عندما:",opts:["لا توجد بيانات إطلاقًا","تكون بياناتك قليلة ومهمتك مشابهة لنموذج جاهز","تريد التدريب من الصفر دائمًا"],a:1}],
+l9:[
+{q:"مصدر التحيز في نماذج التعلم الآلي غالبًا:",opts:["سرعة المعالج","بيانات التدريب المنحازة تاريخيًا","لغة البرمجة المستخدمة"],a:1},
+{q:"التعلم الاتحادي Federated يحمي الخصوصية عبر:",opts:["حذف بيانات المستخدمين","تدريب النموذج على الأجهزة محليًا دون نقل البيانات الخام","تشفير النموذج النهائي فقط"],a:1},
+{q:"تقنيات XAI مثل SHAP تُستخدم لـ:",opts:["تسريع التدريب","تفسير أثر كل خاصية على قرار النموذج","توليد بيانات جديدة"],a:1}]
+};
+
+const STOP=new Set("من إلى عن على في هو هي هم هذا هذه ذلك التي الذي الذين ما لا لم لن قد كان كانت يكون تكون و أو ثم بل لكن لأن كما أيضا أي كل بعض غير بين عند عندما حتى إذا أن إن إنه أنه بعد قبل تحت فوق مع منذ نحو لدى ذات منه منها له لها بها به كانوا قد أثناء خلال ضمن نفسه نفسها إذ أما أم إما فقد وقد كذلك ليس ليست".split(/\s+/));
+
+let doneSet=new Set();
+try{doneSet=new Set(JSON.parse(localStorage.getItem("ai_ar_done")||"[]"))}catch(e){}
+function saveDone(){try{localStorage.setItem("ai_ar_done",JSON.stringify([...doneSet]))}catch(e){}}
+function refreshProg(){
+ document.getElementById("progNum").textContent=doneSet.size+"/"+LESSONS.length;
+ document.getElementById("progBar").style.width=(doneSet.size/LESSONS.length*100)+"%";
+}
+function copyText(t,btn){
+ const done=()=>{btn.textContent="تم النسخ ✓";setTimeout(()=>btn.textContent="انسخ نص الدرس",1500)};
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>{fallbackCopy(t);done()})}else{fallbackCopy(t);done()}
+}
+function fallbackCopy(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta)}
+
+const icCheck='<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19.3027 5.9053C19.6542 5.55397 20.2247 5.55388 20.5761 5.9053C20.9273 6.25675 20.9273 6.82734 20.5761 7.17874L9.65911 18.0948C9.30773 18.4461 8.73814 18.446 8.38665 18.0948L3.42376 13.1328C3.0726 12.7814 3.07263 12.2118 3.42376 11.8604C3.77524 11.509 4.34575 11.5089 4.6972 11.8604L9.02239 16.1856L19.3027 5.9053Z" fill="currentColor"/></svg>';
+
+function renderList(){
+ const el=document.getElementById("lessonList");
+ el.innerHTML=LESSONS.map((l,i)=>{
+  const dn=doneSet.has(l.id)?" finished":"";
+  return `<div class="lesson${dn}" data-id="${l.id}">
+   <div class="n">${i+1}</div>
+   <div class="t"><b>${l.title}</b><span>${l.mins} دقيقة · مستوى ${l.level} · ${l.terms.length} مصطلحات</span></div>
+   <span class="chip">${l.level}</span>
+   <div class="done">${icCheck}</div></div>`;
+ }).join("");
+ el.querySelectorAll(".lesson").forEach(d=>d.onclick=()=>openLesson(d.dataset.id));
+}
+
+function openLesson(id){
+ const l=LESSONS.find(x=>x.id===id);
+ const isDone=doneSet.has(id);
+ document.getElementById("lessonList").classList.add("hidden");
+ const v=document.getElementById("lessonView");
+ v.classList.remove("hidden");
+ v.innerHTML=`<button class="back" id="bk">→ العودة إلى قائمة الدروس</button>
+ <div class="card">
+  <h2>${l.title}</h2>
+  <div class="meta">${l.mins} دقيقة · مستوى ${l.level}${isDone?" · <span style='color:var(--kimi-color-positive)'>تمت دراسته ✓</span>":""}</div>
+  <p style="font-size:15px;color:var(--kimi-color-text-primary);border-inline-start:3px solid var(--kimi-color-text-primary);padding-inline-start:12px">${l.intro}</p>
+  ${l.secs.map(s=>`<h3>${s.h}</h3><p>${s.p}</p>`).join("")}
+  <h3>النقاط الرئيسية للحفظ</h3>
+  <ul>${l.points.map(p=>`<li>${p}</li>`).join("")}</ul>
+  <h3>مصطلحات الدرس</h3>
+  ${l.terms.map(t=>`<div class="termrow"><b>${t.split(" ")[0]}</b><span>${t}</span></div>`).join("")}
+  <div class="row" style="margin-top:16px;flex-wrap:wrap">
+   <button class="btn" id="markDone">${isDone?"تمت الدراسة ✓":"أنهيت دراسة هذا الدرس"}</button>
+   <button class="btn ghost" id="copyL">انسخ نص الدرس</button>
+  </div>
+ </div>`;
+ document.getElementById("bk").onclick=()=>{v.classList.add("hidden");document.getElementById("lessonList").classList.remove("hidden");renderList()};
+ document.getElementById("markDone").onclick=e=>{doneSet.add(id);saveDone();refreshProg();e.target.textContent="تمت الدراسة ✓";renderList()};
+ document.getElementById("copyL").onclick=e=>{copyText(l.title+"\n\n"+l.secs.map(s=>s.h+"\n"+s.p).join("\n\n")+"\n\nالنقاط الرئيسية:\n"+l.points.map(p=>"- "+p).join("\n"),e.target)};
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function splitSentences(t){
+ return t.replace(/\s+/g," ").split(/(?<=[.!?؟؛:])\s+|\n+/).map(s=>s.trim()).filter(s=>s.split(/\s+/).length>=4);
+}
+function summarize(text,ratio){
+ const sents=splitSentences(text);
+ if(sents.length<3) return {sents:[],summary:sents,found:[]};
+ const freq={};
+ sents.forEach(s=>{s.split(/\s+/).forEach(w=>{const k=w.replace(/[^\u0621-\u064aA-Za-z0-9]/g,"");if(k&&k.length>2&&!STOP.has(k))freq[k]=(freq[k]||0)+1})});
+ const scored=sents.map((s,i)=>{
+  const ws=s.split(/\s+/).map(w=>w.replace(/[^\u0621-\u064aA-Za-z0-9]/g,"")).filter(w=>w&&!STOP.has(w));
+  const sc=ws.reduce((a,w)=>a+(freq[w]||0),0)/Math.sqrt(ws.length+1);
+  return {s,i,sc};
+ });
+ const n=Math.max(2,Math.round(sents.length*ratio));
+ const top=[...scored].sort((a,b)=>b.sc-a.sc).slice(0,n).sort((a,b)=>a.i-b.i);
+ const found=GLOSSARY.filter(([term])=>text.includes(term.split(" ")[0])).slice(0,6);
+ return {sents,summary:top.map(t=>t.s),found};
+}
+
+document.getElementById("fileIn").onchange=e=>{
+ const f=e.target.files[0]; if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{document.getElementById("srcText").value=r.result;document.getElementById("fileName").textContent=f.name+" ("+Math.round(f.size/1024)+" كيلوبايت)"};
+ r.readAsText(f);
+};
+
+document.getElementById("summBtn").onclick=()=>{
+ const t=document.getElementById("srcText").value.trim();
+ const out=document.getElementById("summOut");
+ if(t.split(/\s+/).filter(Boolean).length<30){out.innerHTML=`<div class="sumbox"><p style="color:var(--kimi-color-danger)">النص قصير جدًا للتلخيص — أدخل نصًا لا يقل عن جملتين أو ثلاث.</p></div>`;return}
+ const r=parseFloat(document.getElementById("ratio").value);
+ const res=summarize(t,r);
+ const all=res.sents.length;
+ const words=t.split(/\s+/).length, sw=res.summary.join(" ").split(/\s+/).length;
+ const comp=Math.round((1-sw/words)*100);
+ const readT=Math.max(1,Math.round(sw/180));
+ out.innerHTML=`<div class="sumbox">
+  <div class="stats">
+   <div class="stat"><b>${comp}٪</b>اختصار</div>
+   <div class="stat"><b>${all} ← ${res.summary.length}</b>جمل</div>
+   <div class="stat"><b>${words}</b>كلمة أصلية</div>
+   <div class="stat"><b>${readT} د</b>زمن القراءة</div>
+  </div>
+  <h3>الملخص</h3>
+  ${res.summary.map(s=>{
+   let h=s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+   GLOSSARY.forEach(([term])=>{try{h=h.replace(new RegExp(term.split(" ")[0],"g"),m=>"<mark>"+m+"</mark>")}catch(e){}});
+   return `<p>${h}.</p>`}).join("")}
+  ${res.found.length?`<h3>مفاهيم ظهرت في النص</h3>${res.found.map(([t2,d])=>`<div class="termrow"><b>${t2}</b><span>${d}</span></div>`).join("")}`:""}
+  <button class="btn ghost" id="askMore" style="margin-top:12px">انسخ الملخص</button>
+ </div>`;
+ document.getElementById("askMore").onclick=e=>{copyText("ملخص: "+res.summary.join(" "),e.target);e.target.textContent="تم النسخ ✓";setTimeout(()=>e.target.textContent="انسخ الملخص",1500)};
+ out.scrollIntoView({behavior:"smooth",block:"start"});
+};
+
+function renderGlossary(f=""){
+ const list=GLOSSARY.filter(([t,d])=>t.includes(f)||d.includes(f));
+ document.getElementById("termList").innerHTML=list.length?list.map(([t,d])=>`<div class="termrow"><b>${t}</b><span>${d}</span></div>`).join(""):'<p style="color:var(--kimi-color-text-tertiary);font-size:14px">لا نتائج مطابقة.</p>';
+}
+document.getElementById("termSearch").oninput=e=>renderGlossary(e.target.value.trim());
+renderGlossary();
+
+const sel=document.getElementById("quizSel");
+sel.innerHTML=LESSONS.map((l,i)=>`<option value="${l.id}">${i+1}. ${l.title}</option>`).join("");
+function renderQuiz(id){
+ document.getElementById("quizScore").textContent="";
+ document.getElementById("quizBox").innerHTML=QUIZ[id].map((q,qi)=>`<div class="q" data-q="${qi}"><p>${qi+1}. ${q.q}</p>${q.opts.map((o,oi)=>`<label><input type="radio" name="q${qi}" value="${oi}">${o}</label>`).join("")}<div class="feedback" style="display:none"></div></div>`).join("");
+}
+sel.onchange=()=>renderQuiz(sel.value);
+renderQuiz("l1");
+document.getElementById("quizCheck").onclick=()=>{
+ const qs=QUIZ[sel.value];let score=0;
+ document.querySelectorAll("#quizBox .q").forEach(box=>{
+  const qi=+box.dataset.q, q=qs[qi];
+  const chosen=box.querySelector("input:checked");
+  const fb=box.querySelector(".feedback");
+  box.classList.remove("ok","bad");fb.className="feedback";fb.style.display="block";
+  if(chosen&&+chosen.value===q.a){score++;box.classList.add("ok");fb.classList.add("ok");fb.textContent="إجابة صحيحة ✓"}
+  else{box.classList.add("bad");fb.classList.add("bad");fb.textContent="الإجابة الصحيحة: "+q.opts[q.a]}
+ });
+ document.getElementById("quizScore").textContent="النتيجة: "+score+" / "+qs.length;
+};
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+ document.querySelectorAll(".sec").forEach(x=>x.classList.remove("on"));
+ t.classList.add("on");
+ document.getElementById("sec-"+t.dataset.tab).classList.add("on");
+});
+
+renderList();refreshProg();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+</script>
+</body>
+</html>
